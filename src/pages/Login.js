@@ -2,48 +2,30 @@ import React from "react";
 import { Flex, Heading, Text, Input, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "easy-peasy";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const setEmail = useStoreActions((actions) => actions.setEmail);
   const setPassword = useStoreActions((actions) => actions.setPassword);
   const email = useStoreState((state) => state.email);
   const password = useStoreState((state) => state.password);
-  const setIsLoggedIn = useStoreActions((actions) => actions.setIsLoggedIn);
-  const [data, setData] = useState();
+  const setToken = useStoreActions((actions) => actions.setToken);
   const navigate = useNavigate();
 
   const loginHandler = (event) => {
     event.preventDefault();
-
-    fetch("http://192.168.1.210:8080/users/_find", {
-      method: "POST",
-      body: JSON.stringify({
-        selector: {
-          email: email,
-        },
-      }),
-      headers: {
-        Authorization: "Basic " + btoa("innovaLab:Innova.2022"),
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
+    axios
+      .post("http://localhost:3001/login", {
+        email: email,
+        password: password,
       })
-      .then((data) => {
-        setData(data.docs[0]);
-      });
-
-    if (data?.email === email && data?.password === password) {
-      setIsLoggedIn({ status: true, email: email });
-      navigate("/tasks");
-    } else {
-      console.log("Errore");
-    }
+      .then((res) => {
+        setToken(res.data.accessToken);
+        localStorage.setItem("token", res.data.accessToken);
+        navigate("/tasks");
+      })
+      .catch(() => alert("Username o password sbagliati."));
   };
 
   return (

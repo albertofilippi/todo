@@ -11,7 +11,7 @@ export const BUTTON_DATA = [
   {
     icon: RiSuitcaseLine,
     id: "in-corso",
-    text: "In corso",
+    text: "In Corso",
   },
   {
     icon: ImClipboard,

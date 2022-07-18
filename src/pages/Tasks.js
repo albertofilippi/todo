@@ -1,23 +1,19 @@
 import React from "react";
 import { Flex, Box, Button, Text } from "@chakra-ui/react";
 import TasksManagment from "../components/TasksManagment";
-import CardComponent from "../components/CardComponent";
 import ModalComponent from "../components/ModalComponent";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { getTasks } from "../utils/services";
-import { useStoreActions, useStoreState } from "easy-peasy";
-import { useEffect } from "react";
+import { useStoreState, useStoreActions } from "easy-peasy";
+import DisplayTasks from "../components/DisplayTasks";
+import DisplayTitle from "../components/DisplayTitle";
+import { useNavigate } from "react-router-dom";
 
 const Tasks = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const setData = useStoreActions((actions) => actions.setData);
-  const data = useStoreState((state) => state.data);
-
-  useEffect(() => {
-    getTasks(setData);
-  }, []);
-
-  console.log(data);
+  const tasks = useStoreState((state) => state.tasks);
+  const buttonBackground = useStoreState((state) => state.buttonBackground);
+  const setToken = useStoreActions((actions) => actions.setToken);
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -34,7 +30,15 @@ const Tasks = () => {
         <Text as="h1" fontWeight="700" fontSize="17px">
           Todo App
         </Text>
-        <Text>Account</Text>
+        <Text
+          onClick={() => {
+            setToken(null);
+            localStorage.removeItem("token");
+            navigate("/login");
+          }}
+        >
+          Esci
+        </Text>
       </Flex>
       <Flex display="flex" flexDirection="row">
         <Box
@@ -57,11 +61,11 @@ const Tasks = () => {
           alignItems="center"
         >
           <Text fontWeight="800" fontSize="20px" mt={7} color="#03015d">
-            Tutte le Tasks{" "}
+            <DisplayTitle />
             <span
               style={{ fontWeight: "700", fontSize: "13px", color: "#d3d3d3" }}
             >
-              {`(${data?.doc_count})`}
+              {buttonBackground === "all-tasks" && `(${tasks?.length})`}
             </span>
           </Text>
           <Button
@@ -73,9 +77,7 @@ const Tasks = () => {
           >
             + Nuova Task
           </Button>
-          <Box display="flex" alignItems="center" flexDirection="column">
-            <CardComponent />
-          </Box>
+          <DisplayTasks />
         </Box>
       </Flex>
       <ModalComponent isOpen={isOpen} onClose={onClose} />

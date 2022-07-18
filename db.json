@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "test@gmail.com",
+      "password": "$2a$10$RWrJOuTVCIoIs2oP3kA4ne.Ya8UWKMeNbOF5PUFYzCe1LlWRGJZQ2",
+      "name": "test",
+      "id": 1
+    },
+    {
+      "email": "alby983@gmail.com",
+      "password": "$2a$10$4luEFmdDee0JXn0HeAcrgO.amqSo6zYJ16C0VvdO9v1F4P9EMvrES",
+      "name": "Test",
+      "id": 2
+    }
+  ]
+}

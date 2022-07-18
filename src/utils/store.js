@@ -13,37 +13,36 @@ export default createStore({
   setName: action((state, payload) => {
     state.name = payload;
   }),
-  isLoggedIn: {
-    status: false,
-    email: "",
-  },
-  setIsLoggedIn: action((state, payload) => {
-    state.isLoggedIn = payload;
-  }),
-  task: {
-    title: "",
-    description: "",
-    date: "",
-    priority: "bassa",
-  },
-  setTitle: action((state, payload) => {
-    state.task.title = payload;
-  }),
-  setDescription: action((state, payload) => {
-    state.task.description = payload;
-  }),
-  setDate: action((state, payload) => {
-    state.task.date = payload;
-  }),
-  setPriority: action((state, payload) => {
-    state.task.priority = payload;
+  token: "",
+  setToken: action((state, payload) => {
+    state.token = payload;
   }),
   buttonBackground: "all-tasks",
   setButtonBackground: action((state, payload) => {
     state.buttonBackground = payload;
   }),
-  data: {},
-  setData: action((state, payload) => {
-    state.data = payload;
+  tasks: [],
+  setTasks: action((state, tasks) => {
+    state.tasks = tasks;
+  }),
+  updateTask: action((state, id) => {
+    state.tasks.forEach((task) => {
+      if (task.id === id) {
+        return task.status === "in-corso"
+          ? (task.status = "completata")
+          : (task.status = "in-corso");
+      }
+
+      return task;
+    });
+  }),
+  removeTask: action((state, id) => {
+    state.tasks = state.tasks.filter((task) => task.id !== id);
+  }),
+  addTask: action((state, task) => {
+    state.tasks.push(task);
+    state.tasks.sort(function (a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
   }),
 });

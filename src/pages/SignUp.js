@@ -3,6 +3,7 @@ import { Flex, Heading, Text, Input, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
   const setName = useStoreActions((actions) => actions.setName);
@@ -10,30 +11,25 @@ const SignUp = () => {
   const setPassword = useStoreActions((actions) => actions.setPassword);
   const name = useStoreState((state) => state.name);
   const email = useStoreState((state) => state.email);
-  const setIsLoggedIn = useStoreActions((actions) => actions.setIsLoggedIn);
+  const setToken = useStoreActions((actions) => actions.setToken);
   const password = useStoreState((state) => state.password);
   const navigate = useNavigate();
 
   const signupHandler = (event) => {
     event.preventDefault();
 
-    fetch("http://192.168.1.210:8080/users/", {
-      method: "POST",
-      body: JSON.stringify({
+    axios
+      .post("http://localhost:3001/register", {
         name: name,
         email: email,
         password: password,
-      }),
-      headers: {
-        Authorization: "Basic " + btoa("innovaLab:Innova.2022"),
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      if (res.ok) {
-        setIsLoggedIn({ status: true, email: email });
+      })
+      .then((res) => {
+        setToken(res.data.accessToken);
+        localStorage.setItem("token", res.data.accessToken);
         navigate("/tasks");
-      }
-    });
+      })
+      .catch(() => alert("Errore!"));
   };
 
   return (
